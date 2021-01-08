@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+set -e
+
+if [[ "$1" == "-h" ]]; then
+  exec /usr/libexec/s2i/usage
+fi
+
+if [ "$(ls /tmp/artifacts/ 2>/dev/null)" ]; then
+  echo "---> Restoring build artifacts..."
+  mv /tmp/artifacts/. ./
+fi
+
+echo "---> Installing application source..."
+cp -Rf /tmp/src/. ./
+
+echo "---> Building application from source..."
+source /opt/app-root/src/.bashrc
+
+if [[ -f requirements.txt ]]; then
+  echo "---> [!] Installing dependencies with pip"
+  pip install -r requirements.txt
+fi
+
+fix-permissions /opt/app-root -P
