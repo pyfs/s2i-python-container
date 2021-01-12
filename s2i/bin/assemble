@@ -24,10 +24,20 @@ fi
 
 # sphinx make html
 function is_sphinx_installed() {
-  hash sphinx-build $>/dev/null
+  hash sphinx-build &>/dev/null
 }
 
-cd "${DOC_PATH:-docs}"
-make html
+function should_sphinx_build() {
+  is_sphinx_installed && [[ -z "${DISABLE_SPHINX_BUILD}" ]]
+}
+
+function sphinx_build() {
+  if should_sphinx_build; then
+    cd "${DOC_PATH:-docs}" || exit
+    make html
+  fi
+}
+
+sphinx_build
 
 fix-permissions /opt/app-root -P
