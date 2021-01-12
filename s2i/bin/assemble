@@ -22,4 +22,12 @@ if [[ -f requirements.txt ]]; then
   pip install -r requirements.txt
 fi
 
+# sphinx make html
+function is_sphinx_installed() {
+  hash sphinx-build $>/dev/null
+}
+
+cd "${DOC_PATH:-docs}"
+make html
+
 fix-permissions /opt/app-root -P
